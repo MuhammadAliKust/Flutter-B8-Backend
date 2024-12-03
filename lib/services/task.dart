@@ -11,6 +11,15 @@ class TaskServices {
   }
 
   ///Get All Tasks
+  Stream<List<TaskModel>> getAllTasks() {
+    return FirebaseFirestore.instance
+        .collection('taskCollection')
+        .snapshots()
+        .map((taskList) => taskList.docs
+            .map((taskModel) => TaskModel.fromJson(taskModel.data()))
+            .toList());
+  }
+
   ///Get Completed Tasks
   ///Get InCompleted Tasks
   ///Update Task
