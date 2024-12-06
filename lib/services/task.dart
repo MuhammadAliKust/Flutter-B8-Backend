@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' hide Order;
 
 import '../models/task.dart';
 
@@ -21,7 +21,27 @@ class TaskServices {
   }
 
   ///Get Completed Tasks
+  Stream<List<TaskModel>> getCompletedTasks() {
+    return FirebaseFirestore.instance
+        .collection('taskCollection')
+        .where('isCompleted', isEqualTo: true)
+        .snapshots()
+        .map((taskList) => taskList.docs
+            .map((taskModel) => TaskModel.fromJson(taskModel.data()))
+            .toList());
+  }
+
   ///Get InCompleted Tasks
+  Stream<List<TaskModel>> getInCompletedTasks() {
+    return FirebaseFirestore.instance
+        .collection('taskCollection')
+        .where('isCompleted', isEqualTo: false)
+        .snapshots()
+        .map((taskList) => taskList.docs
+            .map((taskModel) => TaskModel.fromJson(taskModel.data()))
+            .toList());
+  }
+
   ///Update Task
   Future updateTask(TaskModel model) async {
     await FirebaseFirestore.instance
