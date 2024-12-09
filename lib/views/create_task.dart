@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_b8_backend/models/task.dart';
 import 'package:flutter_b8_backend/services/task.dart';
+import 'package:flutter_b8_backend/views/get_all_task.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 
 class CreateTaskView extends StatefulWidget {
@@ -70,7 +71,11 @@ class _CreateTaskViewState extends State<CreateTaskView> {
                               actions: [
                                 TextButton(
                                     onPressed: () {
-                                      Navigator.pop(context);
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  GetAllTaskView()));
                                     },
                                     child: Text("Okay"))
                               ],
