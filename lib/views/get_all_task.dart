@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_b8_backend/models/task.dart';
 import 'package:flutter_b8_backend/services/task.dart';
 import 'package:flutter_b8_backend/views/create_task.dart';
+import 'package:flutter_b8_backend/views/update_task.dart';
 import 'package:provider/provider.dart';
 
 class GetAllTaskView extends StatelessWidget {
@@ -50,6 +51,19 @@ class GetAllTaskView extends StatelessWidget {
                             icon: const Icon(
                               Icons.delete,
                               color: Colors.red,
+                            )),
+                        IconButton(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => UpdateTaskView(
+                                            model: taskList[i],
+                                          )));
+                            },
+                            icon: const Icon(
+                              Icons.edit,
+                              color: Colors.blue,
                             )),
                       ],
                     ),

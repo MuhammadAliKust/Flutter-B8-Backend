@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_b8_backend/views/create_task.dart';
+import 'package:flutter_b8_backend/views/dashboard.dart';
 import 'package:flutter_b8_backend/views/get_all_task.dart';
 import 'package:flutter_b8_backend/views/get_completed_task.dart';
 
@@ -37,7 +38,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: GetAllTaskView(),
+      home: DashboardView(),
     );
   }
 }
