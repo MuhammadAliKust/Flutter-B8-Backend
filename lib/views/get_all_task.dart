@@ -33,7 +33,7 @@ class GetAllTaskView extends StatelessWidget {
                 itemCount: taskList.length,
                 itemBuilder: (context, i) {
                   return ListTile(
-                    leading: const Icon(Icons.task),
+                    leading:Image.network(taskList[i].image.toString()),
                     title: Text(taskList[i].title.toString()),
                     subtitle: Text(taskList[i].description.toString()),
                     trailing: Row(

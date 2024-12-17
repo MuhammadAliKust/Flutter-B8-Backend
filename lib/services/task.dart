@@ -6,12 +6,12 @@ import '../models/task.dart';
 class TaskServices {
   ///Create Task
   Future createTask(TaskModel model) async {
-    // DocumentReference documentReference =
-    //     FirebaseFirestore.instance.collection('taskCollection').doc();
+    DocumentReference documentReference =
+        FirebaseFirestore.instance.collection('taskCollection').doc();
     await FirebaseFirestore.instance
         .collection('taskCollection')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .set(model.toJson(FirebaseAuth.instance.currentUser!.uid));
+        .doc(documentReference.id)
+        .set(model.toJson(documentReference.id));
   }
 
   ///Get All Tasks

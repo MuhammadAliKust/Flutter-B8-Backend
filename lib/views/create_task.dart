@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_b8_backend/models/task.dart';
 import 'package:flutter_b8_backend/services/task.dart';
+import 'package:flutter_b8_backend/services/upload_file_services.dart';
 import 'package:flutter_b8_backend/views/get_all_task.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 
 class CreateTaskView extends StatefulWidget {
@@ -19,6 +23,8 @@ class _CreateTaskViewState extends State<CreateTaskView> {
 
   bool isLoading = false;
 
+  File? image;
+
   @override
   Widget build(BuildContext context) {
     return LoadingOverlay(
@@ -29,6 +35,31 @@ class _CreateTaskViewState extends State<CreateTaskView> {
         ),
         body: Column(
           children: [
+            InkWell(
+              onTap: () {
+                ImagePicker()
+                    .pickImage(source: ImageSource.gallery)
+                    .then((filePath) {
+                  image = File(filePath!.path);
+                  setState(() {});
+                });
+              },
+              child: Container(
+                height: 150,
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                    color: Colors.blue.withOpacity(0.6),
+                    borderRadius: BorderRadius.circular(10)),
+                child: image == null
+                    ? Center(
+                        child: Icon(Icons.upload),
+                      )
+                    : Image.file(
+                        image!,
+                        height: 150,
+                      ),
+              ),
+            ),
             TextFormField(
               controller: titleController,
             ),
@@ -53,36 +84,41 @@ class _CreateTaskViewState extends State<CreateTaskView> {
                   try {
                     isLoading = true;
                     setState(() {});
-                    await TaskServices()
-                        .createTask(TaskModel(
-                            title: titleController.text,
-                            description: descriptionController.text,
-                            isCompleted: false,
-                            userID: FirebaseAuth.instance.currentUser!.uid,
-                            createdAt: DateTime.now().millisecondsSinceEpoch))
-                        .then((val) {
-                      isLoading = false;
-                      setState(() {});
-                      showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: Text("Message"),
-                              content:
-                                  Text("Task has been created successfully"),
-                              actions: [
-                                TextButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  GetAllTaskView()));
-                                    },
-                                    child: Text("Okay"))
-                              ],
-                            );
-                          });
+                    await UploadFileServices()
+                        .getUrl(image)
+                        .then((downloadUrl) async {
+                      await TaskServices()
+                          .createTask(TaskModel(
+                              title: titleController.text,
+                              description: descriptionController.text,
+                              isCompleted: false,
+                              image: downloadUrl,
+                              userID: FirebaseAuth.instance.currentUser!.uid,
+                              createdAt: DateTime.now().millisecondsSinceEpoch))
+                          .then((val) {
+                        isLoading = false;
+                        setState(() {});
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: Text("Message"),
+                                content:
+                                    Text("Task has been created successfully"),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    GetAllTaskView()));
+                                      },
+                                      child: Text("Okay"))
+                                ],
+                              );
+                            });
+                      });
                     });
                   } catch (e) {
                     isLoading = false;
