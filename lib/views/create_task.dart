@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_b8_backend/models/task.dart';
 import 'package:flutter_b8_backend/services/task.dart';
@@ -57,6 +58,7 @@ class _CreateTaskViewState extends State<CreateTaskView> {
                             title: titleController.text,
                             description: descriptionController.text,
                             isCompleted: false,
+                            userID: FirebaseAuth.instance.currentUser!.uid,
                             createdAt: DateTime.now().millisecondsSinceEpoch))
                         .then((val) {
                       isLoading = false;

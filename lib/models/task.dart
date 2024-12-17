@@ -10,6 +10,7 @@ class TaskModel {
   final String? description;
   final String? image;
   final bool? isCompleted;
+  final String? userID;
   final int? createdAt;
 
   TaskModel({
@@ -18,6 +19,7 @@ class TaskModel {
     this.description,
     this.image,
     this.isCompleted,
+    this.userID,
     this.createdAt,
   });
 
@@ -28,6 +30,7 @@ class TaskModel {
         image: json["image"],
         isCompleted: json["isCompleted"],
         createdAt: json["createdAt"],
+        userID: json["userID"],
       );
 
   Map<String, dynamic> toJson(String firebaseID) => {
@@ -37,5 +40,6 @@ class TaskModel {
         "image": image,
         "isCompleted": isCompleted,
         "createdAt": createdAt,
+        "userID": userID,
       };
 }

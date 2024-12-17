@@ -21,7 +21,7 @@ class DashboardView extends StatelessWidget {
         child: Icon(Icons.add),
       ),
       body: StreamProvider.value(
-          value: TaskServices().getAllTasks(),
+          value: TaskServices().getAllTasks(''),
           initialData: [TaskModel()],
           builder: (context, child) {
             List<TaskModel> allTaskList = context.watch<List<TaskModel>>();

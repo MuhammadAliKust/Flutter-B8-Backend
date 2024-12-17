@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_b8_backend/models/user.dart';
 import 'package:flutter_b8_backend/services/auth.dart';
+import 'package:flutter_b8_backend/services/user.dart';
 import 'package:flutter_b8_backend/views/login.dart';
 
 class RegisterView extends StatefulWidget {
@@ -11,6 +13,8 @@ class RegisterView extends StatefulWidget {
 
 class _RegisterViewState extends State<RegisterView> {
   TextEditingController emailController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
 
   TextEditingController pwdController = TextEditingController();
 
@@ -25,10 +29,20 @@ class _RegisterViewState extends State<RegisterView> {
       body: Column(
         children: [
           TextField(
+            controller: nameController,
+            decoration: InputDecoration(label: Text("Name")),
+          ),
+          TextField(
+            controller: phoneController,
+            decoration: InputDecoration(label: Text("Phone")),
+          ),
+          TextField(
             controller: emailController,
+            decoration: InputDecoration(label: Text("Email")),
           ),
           TextField(
             controller: pwdController,
+            decoration: InputDecoration(label: Text("Password")),
           ),
           SizedBox(
             height: 40,
@@ -57,7 +71,14 @@ class _RegisterViewState extends State<RegisterView> {
                           .signUpUser(
                               email: emailController.text,
                               password: pwdController.text)
-                          .then((val) {
+                          .then((val) async {
+                        await UserServices().createUser(UserModel(
+                          docId: val!.uid.toString(),
+                          name: nameController.text,
+                          email: emailController.text,
+                          phone: phoneController.text,
+                          createdAt: DateTime.now().millisecondsSinceEpoch,
+                        ));
                         isLoading = false;
                         setState(() {});
                         showDialog(

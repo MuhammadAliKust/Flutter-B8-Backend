@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_b8_backend/services/auth.dart';
+import 'package:flutter_b8_backend/views/dashboard.dart';
 import 'package:flutter_b8_backend/views/forgot_pwd.dart';
+import 'package:flutter_b8_backend/views/get_all_task.dart';
 import 'package:flutter_b8_backend/views/register.dart';
 
 class LoginView extends StatefulWidget {
@@ -63,24 +65,10 @@ class _LoginViewState extends State<LoginView> {
                         setState(() {});
                         if (val != null) {
                           if (val.emailVerified == true) {
-                            showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    title: Text("Message"),
-                                    content: Text(
-                                        "User has been loggedIn successfully"),
-                                    actions: [
-                                      TextButton(
-                                          onPressed: () {
-                                            emailController.clear();
-                                            pwdController.clear();
-                                            Navigator.pop(context);
-                                          },
-                                          child: Text("Okay"))
-                                    ],
-                                  );
-                                });
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => GetAllTaskView()));
                           } else {
                             showDialog(
                                 context: context,

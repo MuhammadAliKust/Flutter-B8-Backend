@@ -1,22 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart' hide Order;
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../models/task.dart';
 
 class TaskServices {
   ///Create Task
   Future createTask(TaskModel model) async {
-    DocumentReference documentReference =
-        FirebaseFirestore.instance.collection('taskCollection').doc();
+    // DocumentReference documentReference =
+    //     FirebaseFirestore.instance.collection('taskCollection').doc();
     await FirebaseFirestore.instance
         .collection('taskCollection')
-        .doc(documentReference.id)
-        .set(model.toJson(documentReference.id));
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .set(model.toJson(FirebaseAuth.instance.currentUser!.uid));
   }
 
   ///Get All Tasks
-  Stream<List<TaskModel>> getAllTasks() {
+  Stream<List<TaskModel>> getAllTasks(String userID) {
     return FirebaseFirestore.instance
         .collection('taskCollection')
+        .where('userID', isEqualTo: userID)
         .snapshots()
         .map((taskList) => taskList.docs
             .map((taskModel) => TaskModel.fromJson(taskModel.data()))
