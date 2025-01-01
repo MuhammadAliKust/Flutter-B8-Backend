@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_b8_backend/services/auth.dart';
 import 'package:flutter_b8_backend/views/dashboard.dart';
 import 'package:flutter_b8_backend/views/forgot_pwd.dart';
+import 'package:flutter_b8_backend/views/get_all_categories.dart';
 import 'package:flutter_b8_backend/views/get_all_task.dart';
 import 'package:flutter_b8_backend/views/register.dart';
 
@@ -68,7 +69,7 @@ class _LoginViewState extends State<LoginView> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => GetAllTaskView()));
+                                    builder: (context) => GetAllCategoriesView()));
                           } else {
                             showDialog(
                                 context: context,

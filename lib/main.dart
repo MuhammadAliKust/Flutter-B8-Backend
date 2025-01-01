@@ -1,19 +1,115 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_b8_backend/token.dart';
 import 'package:flutter_b8_backend/views/create_task.dart';
 import 'package:flutter_b8_backend/views/dashboard.dart';
 import 'package:flutter_b8_backend/views/get_all_task.dart';
 import 'package:flutter_b8_backend/views/get_completed_task.dart';
 import 'package:flutter_b8_backend/views/login.dart';
 
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+
+  await createNotification(
+    title: message.notification!.title.toString(),
+    body: message.notification!.body.toString(),
+  );
+}
+
+Future<void> createNotification(
+    {required String title, required String body}) async {
+  await AwesomeNotifications().createNotification(
+    content: NotificationContent(
+        id: 1, channelKey: 'basic_channel', title: title, body: body),
+  );
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await AwesomeNotifications().initialize(
+    'resource://drawable/res_notification_app_icon',
+    [
+      NotificationChannel(
+        channelKey: 'basic_channel',
+        channelName: 'Basic Notifications',
+        defaultColor: Colors.teal,
+        importance: NotificationImportance.High,
+        channelShowBadge: true,
+        channelDescription: 'Test',
+      ),
+    ],
+  );
+
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  FirebaseMessaging.onMessageOpenedApp.listen((message) {
+    createNotification(
+      title: message.notification!.title.toString(),
+      body: message.notification!.body.toString(),
+    );
+  });
+  FirebaseMessaging.onMessage.listen((message) {
+    createNotification(
+      title: message.notification!.title.toString(),
+      body: message.notification!.body.toString(),
+    );
+  });
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    AwesomeNotifications().isNotificationAllowed().then(
+      (isAllowed) {
+        if (!isAllowed) {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('Allow Notifications'),
+              content:
+                  const Text('Our app would like to send you notifications'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text(
+                    'Don\'t Allow',
+                    style: TextStyle(color: Colors.grey, fontSize: 18),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () => AwesomeNotifications()
+                      .requestPermissionToSendNotifications()
+                      .then((_) => Navigator.pop(context)),
+                  child: const Text(
+                    'Allow',
+                    style: TextStyle(
+                      color: Colors.teal,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+      },
+    );
+    super.initState();
+  }
 
   // This widget is the root of your application.
   @override
@@ -39,7 +135,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: LoginView(),
+      home:  LoginView(),
     );
   }
 }

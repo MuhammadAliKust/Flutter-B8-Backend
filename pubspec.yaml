@@ -43,6 +43,11 @@ dependencies:
   firebase_storage: ^12.3.7
   image_picker: ^1.1.2
 
+  awesome_notifications: ^0.8.2
+  firebase_messaging: ^15.1.6
+  googleapis_auth: ^1.4.1
+  http: ^1.1.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

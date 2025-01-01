@@ -18,7 +18,7 @@ class TaskServices {
   Stream<List<TaskModel>> getAllTasks(String userID) {
     return FirebaseFirestore.instance
         .collection('taskCollection')
-        .where('userID', isEqualTo: userID)
+        // .where('userID', isEqualTo: userID)
         .snapshots()
         .map((taskList) => taskList.docs
             .map((taskModel) => TaskModel.fromJson(taskModel.data()))
@@ -41,6 +41,16 @@ class TaskServices {
     return FirebaseFirestore.instance
         .collection('taskCollection')
         .where('isCompleted', isEqualTo: false)
+        .snapshots()
+        .map((taskList) => taskList.docs
+            .map((taskModel) => TaskModel.fromJson(taskModel.data()))
+            .toList());
+  }
+
+  Stream<List<TaskModel>> getTaskByCategoryID(String categoryID) {
+    return FirebaseFirestore.instance
+        .collection('taskCollection')
+        .where('categoryID', isEqualTo: categoryID)
         .snapshots()
         .map((taskList) => taskList.docs
             .map((taskModel) => TaskModel.fromJson(taskModel.data()))

@@ -7,8 +7,10 @@ import 'package:flutter_b8_backend/views/create_task.dart';
 import 'package:flutter_b8_backend/views/update_task.dart';
 import 'package:provider/provider.dart';
 
-class GetAllTaskView extends StatelessWidget {
-  const GetAllTaskView({super.key});
+class GetCategoryTaskView extends StatelessWidget {
+  final String categoryID;
+
+  const GetCategoryTaskView({super.key, required this.categoryID});
 
   @override
   Widget build(BuildContext context) {
@@ -24,8 +26,7 @@ class GetAllTaskView extends StatelessWidget {
           child: const Icon(Icons.add),
         ),
         body: StreamProvider.value(
-          value: TaskServices()
-              .getAllTasks(FirebaseAuth.instance.currentUser!.uid),
+          value: TaskServices().getTaskByCategoryID(categoryID),
           initialData: [TaskModel()],
           builder: (context, child) {
             List<TaskModel> taskList = context.watch<List<TaskModel>>();
@@ -49,30 +50,30 @@ class GetAllTaskView extends StatelessWidget {
                               }),
                         if (FirebaseAuth.instance.currentUser!.uid ==
                             taskList[i].userID.toString())
-                        IconButton(
-                            onPressed: () {
-                              TaskServices()
-                                  .deleteTask(taskList[i].docId.toString());
-                            },
-                            icon: const Icon(
-                              Icons.delete,
-                              color: Colors.red,
-                            )),
+                          IconButton(
+                              onPressed: () {
+                                TaskServices()
+                                    .deleteTask(taskList[i].docId.toString());
+                              },
+                              icon: const Icon(
+                                Icons.delete,
+                                color: Colors.red,
+                              )),
                         if (FirebaseAuth.instance.currentUser!.uid ==
                             taskList[i].userID.toString())
-                        IconButton(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => UpdateTaskView(
-                                            model: taskList[i],
-                                          )));
-                            },
-                            icon: const Icon(
-                              Icons.edit,
-                              color: Colors.blue,
-                            )),
+                          IconButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => UpdateTaskView(
+                                              model: taskList[i],
+                                            )));
+                              },
+                              icon: const Icon(
+                                Icons.edit,
+                                color: Colors.blue,
+                              )),
                       ],
                     ),
                   );

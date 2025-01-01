@@ -1,8 +1,11 @@
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_b8_backend/models/category.dart';
 import 'package:flutter_b8_backend/models/task.dart';
+import 'package:flutter_b8_backend/services/category.dart';
 import 'package:flutter_b8_backend/services/task.dart';
 import 'package:flutter_b8_backend/services/upload_file_services.dart';
 import 'package:flutter_b8_backend/views/get_all_task.dart';
@@ -24,6 +27,21 @@ class _CreateTaskViewState extends State<CreateTaskView> {
   bool isLoading = false;
 
   File? image;
+  List<CategoryModel> categoriesList = [];
+  CategoryModel? _selectedCategory;
+
+  getCategories() {
+    CategoryServices().getAllCategories().first.then((val) {
+      categoriesList = val;
+      setState(() {});
+    });
+  }
+
+  @override
+  void initState() {
+    getCategories();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +78,26 @@ class _CreateTaskViewState extends State<CreateTaskView> {
                       ),
               ),
             ),
+            SizedBox(
+              height: 10,
+            ),
+            DropdownButton(
+                items: categoriesList.map((e) {
+                  return DropdownMenuItem(
+                    child: Text(
+                      e.name.toString(),
+                    ),
+                    value: e,
+                  );
+                }).toList(),
+                value: _selectedCategory,
+                onChanged: (val) {
+                  _selectedCategory = val;
+                  setState(() {});
+                }),
+            SizedBox(
+              height: 10,
+            ),
             TextFormField(
               controller: titleController,
             ),
@@ -93,6 +131,7 @@ class _CreateTaskViewState extends State<CreateTaskView> {
                               description: descriptionController.text,
                               isCompleted: false,
                               image: downloadUrl,
+                              categoryID: _selectedCategory!.docId.toString(),
                               userID: FirebaseAuth.instance.currentUser!.uid,
                               createdAt: DateTime.now().millisecondsSinceEpoch))
                           .then((val) {
